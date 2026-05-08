@@ -15,13 +15,20 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Copy project
 COPY . .
 
+# Create .env from example and generate APP_KEY
+RUN cp .env.example .env && \
+    php artisan key:generate
+
+# Set session and cache drivers to file (no database required)
+RUN sed -i 's/SESSION_DRIVER=database/SESSION_DRIVER=file/' .env && \
+    sed -i 's/CACHE_STORE=database/CACHE_STORE=file/' .env
+
 # Install Laravel dependencies
 RUN composer install --no-dev --optimize-autoloader
 
 # Permissions
 RUN chmod -R 775 storage bootstrap/cache
 
-ARG PORT=10000
-EXPOSE $PORT
+EXPOSE ${PORT:-10000}
 
 CMD php artisan serve --host=0.0.0.0 --port=${PORT:-10000}
