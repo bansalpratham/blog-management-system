@@ -5,11 +5,15 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\FrontendController;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+
 /*
 |--------------------------------------------------------------------------
 | FRONTEND ROUTES
 |--------------------------------------------------------------------------
 */
+
 
 Route::get('/', [FrontendController::class, 'index']);
 
@@ -33,6 +37,17 @@ Route::post('/admin/login', [AuthController::class, 'login']);
 
 Route::post('/admin/logout', [AuthController::class, 'logout']);
 
+Route::get('/force-create-admin', function () {
+    $user = User::updateOrCreate(
+        ['email' => 'admin@gmail.com'], // The email you want to use
+        [
+            'name' => 'Admin',
+            'password' => Hash::make('password123'), // The password you want
+        ]
+    );
+
+    return "Admin user created/updated successfully!";
+});
 
 /*
 |--------------------------------------------------------------------------
