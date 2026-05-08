@@ -1,4 +1,4 @@
-FROM php:8.2-cli
+FROM php:8.4-cli
 
 WORKDIR /var/www/html
 
@@ -21,6 +21,7 @@ RUN composer install --no-dev --optimize-autoloader
 # Permissions
 RUN chmod -R 775 storage bootstrap/cache
 
-EXPOSE 10000
+ARG PORT=10000
+EXPOSE $PORT
 
-CMD php artisan serve --host=0.0.0.0 --port=10000
+CMD php artisan serve --host=0.0.0.0 --port=${PORT:-10000}
