@@ -18,6 +18,10 @@ COPY . .
 # Install Laravel dependencies
 RUN composer install --no-dev --optimize-autoloader
 
+# Set up .env and generate APP_KEY
+RUN cp .env.example .env || echo "APP_KEY=" > .env && \
+    php artisan key:generate --force
+
 # Permissions
 RUN chmod -R 775 storage bootstrap/cache
 
